@@ -1,7 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import {BrowserRouter as Router, Routes} from 'react-router-dom'
+import Footer from './components/Footer';
+import Homepage from './pages/Homepage';
+import SignInPage from './pages/Sign-in';
+import {BrowserRouter as Router, Route, Routes} from 'react-router-dom'
 import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -9,7 +12,10 @@ root.render(
   <React.StrictMode>
     <Router>
       <Routes>
+        <Route exact path='/' element={<Homepage/>}/>
+        <Route path='/sign-in' element={<SignInPage/>}/>
       </Routes>
+      <Footer/>
     </Router>
   </React.StrictMode>
 );
