@@ -1,5 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { authFailed } from "../store";
+import { useDispatch, useSelector } from "react-redux";
 import LoginHeader from '../components/LoginHeader';
 
 const loginUrl = 'http://localhost:3001/api/v1/user/login'
@@ -7,8 +9,9 @@ export const userUrl = 'http://localhost:3001/api/v1/user/profile'
 
 function SignInPage(){
     const onNavigate = useNavigate()
+    const dispatch = useDispatch()
+    const login = useSelector((state) => state.login)
     const [isChecked, setChecked] = useState(localStorage.getItem('isRemember') || false);
-    //console.log(login)
     const [credentials, setCredentials] = useState({
     email: '',
     password: ''
@@ -34,8 +37,8 @@ function SignInPage(){
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                email: JSON.parse(isRemember) ? email : credentials.email,        
-                password: JSON.parse(isRemember) ? password : credentials.password
+                email: credentials.email,     
+                password: credentials.password
             })
         })
         .then(res => res.json())
@@ -44,10 +47,15 @@ function SignInPage(){
             const token = localStorage.getItem('jwt')
             if(token){
                 onNavigate(`/user`)
+            }else{
+                dispatch(authFailed()) 
             }
         })
         .catch(err => {
             console.log(err + 'identifiant incorrenct')
+            if(!login.isAuth){
+                document.querySelector('.error-message').innerHTML = 'identifiant incorrenct'
+            }
         })
     }
     
@@ -58,7 +66,7 @@ function SignInPage(){
         setChecked(value)
     };
     
-    const isRemember = localStorage.getItem('isRemember')
+    // const isRemember = localStorage.getItem('isRemember')
     const email = localStorage.getItem('email')
     const password = localStorage.getItem('password')
     useEffect(() => {
