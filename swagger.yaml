@@ -5,199 +5,140 @@ info:
   version: '1.0.0'
   termsOfService: 'http://swagger.io/terms/'
 host: localhost:3001
-basePath: /api/v1/user/
+basePath: /api/v1
 schemes:
   - http
 paths:
-  /{userId}/transactions:
-    get:
+  /user/login:
+    post:
       tags:
-      - User Transactions
-      summary: Transactions
-      description: Get all user's transactions
+        - User Module
+      summary: Login
+      description: API for Login
+      parameters:
+        - in: body
+          name: body
+          description: Login Payload
+          required: true
+          schema:
+            $ref: '#/definitions/Login'
       produces:
         - application/json
+      responses:
+        '200':
+          description: Login Successfully
+          schema:
+            $ref: '#/definitions/LoginResponse'
+        '400':
+          description: Invalid Fields
+        '500':
+          description: Internal Server Error
+  /user/signup:
+    post:
+      tags:
+        - User Module
+      summary: Signup
+      description: API for Signup
       parameters:
-        - name: Authorization
-          in: header
+        - in: body
+          name: body
+          description: Signup Payload
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Signup Successfully
+          schema:
+            $ref: '#/definitions/ApiResponse'
+        '400':
+          description: Invalid Fields
+        '500':
+          description: Internal Server Error
+  /user/profile:
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - User Module
+      summary: User Profile API
+      description: API for fetching a user profile
+      parameters:
+        - in: header
+          name: Authorization
           description: Attach Bearer JWT token
           required: true
-          type: string
-        - name: userId
-          in: path
-          description: user Id
-          required: true
-          type: string
-      responses:
-        '200':
-          description: Account transactions retrieved successfully
-          schema:
-            $ref: '#/definitions/TransactionsRes'
-        '401':
-          description: Unauthorized 
-        '500':
-          description: Internal Server Error
-      security:
-        - Bearer: []
-  /{userId}/transactions/{transactionsId}:
-    get:
-      tags:
-      - User Transactions
-      summary: Transaction details
-      description: Get transaction's details
-      parameters:
-      - in: path
-        name: userId
-        description: User's ID
-        required: true
-        type: string
-      - in: path
-        name: transactionsId
-        description: Transaction's ID
-        required: true
-        type: string
-      responses:
-        '200':
-          description: Transaction retrieved successully
-          schema:
-            $ref: '#/definitions/Transactions'
-        '404':
-          description: Not found
-        '500':
-          description: Internal Server Error
-  /{userId}/transactions/{transactionsId}/category:
-    put:
-      security:
-        - Bearer: []
-      tags:
-        - User Transactions
-      summary: Update Transactions
-      description: Update a transaction category
-      parameters:
-        - name: userId
-          in: path
-          description: User's Id
-          required: true
-          type: string
-        - in: path
-          name: transactionsId
-          description: Transaction's Id
-          required: true
-          type: string
-        - in: body
-          name: body
-          description: New transaction's category
-          required: true
-          schema:
-            $ref: '#/definitions/Category'
       produces:
         - application/json
       responses:
         '200':
-          description: Category updated successfully
+          description: User profile retrieved successully
           schema:
-            $ref: '#/definitions/Transactions'
+            $ref: '#/definitions/ApiResponse'
         '400':
-          description: Bad Request
+          description: Invalid Fields
         '500':
           description: Internal Server Error
-    delete:
-      tags:
-      - User Transactions
-      summary: Delete Category
-      description: Delete transaction's category
-      produces:
-      - application/json
-      parameters:
-      - name: userId
-        in: path
-        description: user Id
-        required: true
-        type: string
-      - in: path
-        name: transactionsId
-        description: Transaction's ID
-        required: true
-        type: integer
-      responses:
-        '200':
-          description: Category deleted successfully
-          schema:
-            $ref: '#/definitions/Transactions'
-        '400':
-          description: Bad request.
-        '500':
-          description: Internal Server Error
-  /{userId}/transactions/{transactionsId}/notes:
     put:
       security:
         - Bearer: []
       tags:
-        - User Transactions
-      summary: Delete Notes
-      description: Update transaction's Notes
+        - User Module
+      summary: User Profile API
+      description: API for updating a user profile
       parameters:
-        - in: path
-          name: userId
-          description: User's ID
+        - in: header
+          name: Authorization
+          description: Attach Bearer JWT token
           required: true
-          type: string
-        - in: path
-          name: transactionsId
-          description: Transaction's Id
-          required: true
-          type: string
         - in: body
           name: body
-          description: New Transaction's Notes
+          description: Update user profile attributes
           required: true
           schema:
-            $ref: '#/definitions/Notes'
+            $ref: '#/definitions/UserProfile'
       produces:
         - application/json
       responses:
         '200':
-          description: Notes updated successfully
+          description: User profile retrieved successully
           schema:
-            $ref: '#/definitions/Transactions'
+            $ref: '#/definitions/ApiResponse'
         '400':
-          description: Bad Request
+          description: Invalid Fields
         '500':
           description: Internal Server Error
-    delete:
-      tags:
-      - User Transactions
-      summary: Delete Notes
-      description: Delete transaction's Notes
-      produces:
-      - application/json
-      parameters:
-      - in: path
-        name: userId
-        description: User's ID
-        required: true
-        type: string
-      - in: path
-        name: transactionsId
-        description: Transaction's ID
-        required: true
-        type: integer
-      responses:
-        '200':
-          description: Notes deleted successfully
-          schema:
-            $ref: '#/definitions/Transactions'
-        '400':
-          description: Bad request.
-        '500':
-          description: Internal Server Error  
 securityDefinitions:
   Bearer:
     type: apiKey
     name: Authorization
     in: header
 definitions:
-  TransactionsRes:
+  User:
+    properties:
+      email:
+        type: string
+        description: user email
+      password:
+        type: string
+        description: user password
+      firstName:
+        type: string
+        description: user first name
+      lastName:
+        type: string
+        description: user last name
+  Login:
+    properties:
+      email:
+        type: string
+        description: user email
+      password:
+        type: string
+        description: user password
+  ApiResponse:
     type: object
     properties:
       status:
@@ -206,40 +147,20 @@ definitions:
         type: string
       body:
         type: object
-        properties: 
-          transactionId:
+        properties:
+          id:
             type: string
-          transactionType: 
+          email:
             type: string
-          amount:
-            type: number
-          balance: 
-            type: number
-  Transactions:
+  LoginResponse:
     type: object
     properties:
-      status:
-        type: integer
-      message:
+      token:
         type: string
-      body:
-        type: object
-        properties: 
-          transactionId:
-            type: string
-          transactionType: 
-            type: string
-          category:
-            type: string
-          notes: 
-            type: string
-  Category:
-    type: string
-    properties: 
-      category: 
+  UserProfile:
+    type: object
+    properties:
+      firstName:
         type: string
-  Notes:
-    type: string
-    properties: 
-      notes:
+      lastName:
         type: string

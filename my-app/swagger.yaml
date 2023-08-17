@@ -1,0 +1,245 @@
+swagger: '2.0'
+info:
+  title: Bank Argent API documentation
+  description: Contains all available API endpoints in this codebase
+  version: '1.0.0'
+  termsOfService: 'http://swagger.io/terms/'
+host: localhost:3001
+basePath: /api/v1/user/
+schemes:
+  - http
+paths:
+  /{userId}/transactions:
+    get:
+      tags:
+      - User Transactions
+      summary: Transactions
+      description: Get all user's transactions
+      produces:
+        - application/json
+      parameters:
+        - name: Authorization
+          in: header
+          description: Attach Bearer JWT token
+          required: true
+          type: string
+        - name: userId
+          in: path
+          description: user Id
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Account transactions retrieved successfully
+          schema:
+            $ref: '#/definitions/TransactionsRes'
+        '401':
+          description: Unauthorized 
+        '500':
+          description: Internal Server Error
+      security:
+        - Bearer: []
+  /{userId}/transactions/{transactionsId}:
+    get:
+      tags:
+      - User Transactions
+      summary: Transaction details
+      description: Get transaction's details
+      parameters:
+      - in: path
+        name: userId
+        description: User's ID
+        required: true
+        type: string
+      - in: path
+        name: transactionsId
+        description: Transaction's ID
+        required: true
+        type: string
+      responses:
+        '200':
+          description: Transaction retrieved successully
+          schema:
+            $ref: '#/definitions/Transactions'
+        '404':
+          description: Not found
+        '500':
+          description: Internal Server Error
+  /{userId}/transactions/{transactionsId}/category:
+    put:
+      security:
+        - Bearer: []
+      tags:
+        - User Transactions
+      summary: Update Transactions
+      description: Update a transaction category
+      parameters:
+        - name: userId
+          in: path
+          description: User's Id
+          required: true
+          type: string
+        - in: path
+          name: transactionsId
+          description: Transaction's Id
+          required: true
+          type: string
+        - in: body
+          name: body
+          description: New transaction's category
+          required: true
+          schema:
+            $ref: '#/definitions/Category'
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Category updated successfully
+          schema:
+            $ref: '#/definitions/Transactions'
+        '400':
+          description: Bad Request
+        '500':
+          description: Internal Server Error
+    delete:
+      tags:
+      - User Transactions
+      summary: Delete Category
+      description: Delete transaction's category
+      produces:
+      - application/json
+      parameters:
+      - name: userId
+        in: path
+        description: user Id
+        required: true
+        type: string
+      - in: path
+        name: transactionsId
+        description: Transaction's ID
+        required: true
+        type: integer
+      responses:
+        '200':
+          description: Category deleted successfully
+          schema:
+            $ref: '#/definitions/Transactions'
+        '400':
+          description: Bad request.
+        '500':
+          description: Internal Server Error
+  /{userId}/transactions/{transactionsId}/notes:
+    put:
+      security:
+        - Bearer: []
+      tags:
+        - User Transactions
+      summary: Delete Notes
+      description: Update transaction's Notes
+      parameters:
+        - in: path
+          name: userId
+          description: User's ID
+          required: true
+          type: string
+        - in: path
+          name: transactionsId
+          description: Transaction's Id
+          required: true
+          type: string
+        - in: body
+          name: body
+          description: New Transaction's Notes
+          required: true
+          schema:
+            $ref: '#/definitions/Notes'
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Notes updated successfully
+          schema:
+            $ref: '#/definitions/Transactions'
+        '400':
+          description: Bad Request
+        '500':
+          description: Internal Server Error
+    delete:
+      tags:
+      - User Transactions
+      summary: Delete Notes
+      description: Delete transaction's Notes
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: userId
+        description: User's ID
+        required: true
+        type: string
+      - in: path
+        name: transactionsId
+        description: Transaction's ID
+        required: true
+        type: integer
+      responses:
+        '200':
+          description: Notes deleted successfully
+          schema:
+            $ref: '#/definitions/Transactions'
+        '400':
+          description: Bad request.
+        '500':
+          description: Internal Server Error  
+securityDefinitions:
+  Bearer:
+    type: apiKey
+    name: Authorization
+    in: header
+definitions:
+  TransactionsRes:
+    type: object
+    properties:
+      status:
+        type: integer
+      message:
+        type: string
+      body:
+        type: object
+        properties: 
+          transactionId:
+            type: string
+          transactionType: 
+            type: string
+          amount:
+            type: number
+          balance: 
+            type: number
+  Transactions:
+    type: object
+    properties:
+      status:
+        type: integer
+      message:
+        type: string
+      body:
+        type: object
+        properties: 
+          transactionId:
+            type: string
+          transactionType: 
+            type: string
+          category:
+            type: string
+          notes: 
+            type: string
+  Category:
+    type: string
+    properties: 
+      category: 
+        type: string
+  Notes:
+    type: string
+    properties: 
+      notes:
+        type: string
