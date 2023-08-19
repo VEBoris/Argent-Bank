@@ -9,8 +9,8 @@ function EditName(){
     const dispatch = useDispatch()
     const token = localStorage.getItem('jwt')
     const [newName, setNewName] = useState({
-        firstName: '',
-        lastName: ''
+        firstName: login.firstName,
+        lastName: login.lastName,
     })
     const handleInput = (e) => {
         const value = e.target.value
@@ -49,9 +49,9 @@ function EditName(){
             <h1>Welcome back</h1>
             <form onSubmit={saveName}>
                 <label htmlFor='firstName'></label>
-                <input onChange={handleInput} id="firstName" placeholder={login.firstName} type='text'></input>
+                <input onChange={handleInput} id="firstName" defaultValue={login.firstName} type='text' required minLength="2"></input>
                 <label htmlFor='lastName'></label>
-                <input onChange={handleInput} id="lastName" placeholder={login.lastName} type='text'></input>
+                <input onChange={handleInput} id="lastName" defaultValue={login.lastName} type='text' required minLength="2"></input>
                 <div>
                     <input type='submit' className="edit-button" value='Save'/>
                     <button onClick={cancel} className="edit-button">Cancel</button>
