@@ -39,6 +39,39 @@ paths:
           description: Internal Server Error
       security:
         - Bearer: []
+    post:
+      tags:
+      - User Transactions
+      summary: Transactions
+      description: Add a transaction
+      produces:
+      - "application/json"
+      parameters:
+      - in: "header"
+        name: "Authorization"
+        description: Attach Bearer JWT token
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: Transaction object that needs to be added transaction
+        required: true
+        schema:
+          $ref: '#/definitions/Transactions'
+      - name: userId
+        in: path
+        description: user Id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: "Transaction added successully"
+          schema:
+            $ref: '#/definitions/Transactions'
+        "401":
+          description: Bad Request
+        "500":
+          description: Internal Server Error 
   /{userId}/transactions/{transactionsId}:
     get:
       tags:
@@ -64,7 +97,7 @@ paths:
         '404':
           description: Not found
         '500':
-          description: Internal Server Error
+          description: Internal Server Error       
   /{userId}/transactions/{transactionsId}/category:
     put:
       security:
@@ -129,12 +162,45 @@ paths:
         '500':
           description: Internal Server Error
   /{userId}/transactions/{transactionsId}/notes:
+    post:
+      tags:
+      - User Transactions
+      summary: Add notes
+      description: Add a transaction Notes
+      produces:
+      - "application/json"
+      parameters:
+      - in: path
+        name: userId
+        description: User's ID
+        required: true
+        type: string
+      - in: path
+        name: transactionsId
+        description: Transaction's Id
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: Add Transaction's Notes
+        required: true
+        schema:
+          $ref: '#/definitions/Notes'
+      responses:
+        "200":
+          description: "Notes added successully"
+          schema:
+            $ref: '#/definitions/Notes'
+        "401":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
     put:
       security:
         - Bearer: []
       tags:
         - User Transactions
-      summary: Delete Notes
+      summary: Update Notes
       description: Update transaction's Notes
       parameters:
         - in: path
@@ -149,7 +215,7 @@ paths:
           type: string
         - in: body
           name: body
-          description: New Transaction's Notes
+          description: Update Transaction's Notes
           required: true
           schema:
             $ref: '#/definitions/Notes'

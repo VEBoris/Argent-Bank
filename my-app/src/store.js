@@ -17,6 +17,10 @@ const loginSlice = createSlice({
       state.firstName = action.payload.firstName
       state.lastName = action.payload.lastName
     },
+    setToken: (state, action) => {
+      state.token = action.payload.token
+      state.isRemember = true
+    },
     authFailed: (state) => {
       state.isAuth = false
       state.isRemember = false
@@ -34,7 +38,7 @@ const loginSlice = createSlice({
 })
 
 
-export const {authSuccessful, authFailed, resetState, editState} =  loginSlice.actions
+export const {authSuccessful, setToken, authFailed, resetState, editState} =  loginSlice.actions
 
 export const store = configureStore({
   reducer: {

@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { authFailed } from "../store";
+import { setToken } from "../store";
 import { useDispatch, useSelector } from "react-redux";
 import LoginHeader from '../components/LoginHeader';
 
@@ -9,7 +10,7 @@ export const userUrl = 'http://localhost:3001/api/v1/user/profile'
 
 function SignInPage(){
     const onNavigate = useNavigate()
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
     const login = useSelector((state) => state.login)
     const [isChecked, setChecked] = useState(localStorage.getItem('isRemember') || false);
     const [credentials, setCredentials] = useState({
@@ -37,18 +38,19 @@ function SignInPage(){
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                email: credentials.email,     
-                password: credentials.password
+                email: JSON.parse(isRemember) ? email : credentials.email,        
+                password : credentials.password
             })
         })
         .then(res => res.json())
         .then(data => {
             localStorage.setItem('jwt', data.body.token)
-            const token = localStorage.getItem('jwt')
-            if(token){
+            const tokens = localStorage.getItem('jwt')
+            if(tokens){
                 onNavigate(`/user`)
-            }else{
-                dispatch(authFailed()) 
+                dispatch(setToken())
+            } else {
+                dispatch(authFailed())
             }
         })
         .catch(err => {
@@ -66,7 +68,12 @@ function SignInPage(){
         setChecked(value)
     };
     
-    // const isRemember = localStorage.getItem('isRemember')
+    const token = localStorage.getItem('jwt')
+    const isRemember = localStorage.getItem('isRemember')
+    if(isRemember && token){
+        console.log('je suis connecté')
+        onNavigate(`/user`)
+    }
     const email = localStorage.getItem('email')
     const password = localStorage.getItem('password')
     useEffect(() => {

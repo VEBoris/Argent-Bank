@@ -27,7 +27,6 @@ function UserPage(){
             .catch(err => dispatch(authFailed()))
         }
     })
-    console.log(login)
     if(login.isAuth){
         return(
             <div className="userpage">
